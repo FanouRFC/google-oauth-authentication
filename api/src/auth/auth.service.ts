@@ -12,4 +12,11 @@ export class AuthService {
       user: req.user,
     };
   }
+
+  facebookLogin(req){
+    if(!req.user){
+        return "No user found"
+    }
+    return req.user
+  }
 }
