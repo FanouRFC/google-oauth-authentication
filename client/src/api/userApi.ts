@@ -7,7 +7,7 @@ type userType = {
 
 export const userApi = {
     getAll : () => {return axiosInstance.get("/user")},
-    getById: (id: number)=>{return axiosInstance.get(`/user/${id}`)},
+    getBySearch: (search: string)=>{return axiosInstance.get(`/user/${search}`)},
     add: (data: userType)=>{return axiosInstance.post("/user", data)},
     delete: (id: number)=>{return axiosInstance.delete(`/user/${id}`)},
     update: (id: number, data: userType)=>{return axiosInstance.patch(`/user/${id}`, data)}

@@ -43,8 +43,8 @@ export default function UserList() {
       setUsers(usersRequest.data);
       return;
     }
-    const req = await userApi.getById(parseInt(value));
-    setUsers([req.data]);
+    const req = await userApi.getBySearch(value);
+    setUsers(req.data);
   }
 
   useEffect(() => {
