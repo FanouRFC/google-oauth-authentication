@@ -13,8 +13,8 @@ export class UserController {
     }
 
     @Get(":id")
-    async getOneUser(@Param("id", ParseIntPipe) id){
-        return await this.userService.getOne(id) 
+    async getSome(@Param("id") id){
+        return await this.userService.getSome(id) 
     }
 
     @Post("")

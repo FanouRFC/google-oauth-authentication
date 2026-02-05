@@ -9,8 +9,15 @@ export class UserService {
         return (await this.prisma.user.findMany({orderBy: {id: 'asc'}}))
     }
 
-    async getOne(id: number): Promise<User | null>{
-        return this.prisma.user.findUnique({where: {id}})
+    async getSome(search: string): Promise<User[] | null>{
+        return this.prisma.user.findMany({where: 
+            {OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } }
+            ]
+            }
+        }
+        )
     }
 
     async add(userData: Prisma.UserCreateInput): Promise<User>{
