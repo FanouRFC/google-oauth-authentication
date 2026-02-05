@@ -1,11 +1,11 @@
-import { IsAlpha, IsEmail, IsEmpty, IsOptional} from "class-validator";
+import {IsEmail, IsOptional, IsString} from "class-validator";
 
 export class userUpdateDTO {
     @IsEmail()
     @IsOptional()
     email: string
 
-    @IsAlpha()
+    @IsString()
     @IsOptional()
     name: string
 }
