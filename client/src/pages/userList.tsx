@@ -33,6 +33,20 @@ type User = {
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+
+  async function onSearchChange(e: ChangeEvent<HTMLInputElement>) {
+    var value = e.target.value;
+    setSearch(value);
+    if (!value) {
+      const usersRequest = await userApi.getAll();
+      setUsers(usersRequest.data);
+      return;
+    }
+    const req = await userApi.getById(parseInt(value));
+    setUsers([req.data]);
+  }
+
   useEffect(() => {
     async function getUsers() {
       try {
@@ -44,11 +58,19 @@ export default function UserList() {
     }
     getUsers();
   }, []);
+
   return (
     <div className="flex justify-center">
       <div className="flex flex-col justify-center w-[75%]">
         <p className="text-2xl font-medium">List of all users</p>
         <AddModal setUsers={setUsers} users={users} />
+        <Input
+          type="text"
+          value={search}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onSearchChange(e);
+          }}
+        />
         <Table>
           <TableHeader>
             <TableRow>
