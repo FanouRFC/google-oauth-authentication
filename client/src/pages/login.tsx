@@ -9,6 +9,9 @@ export default function Login() {
     window.location.href = "http://localhost:3000/auth/google-redirect";
   }
 
+  function loginWithFacebook() {
+    window.location.href = "http://localhost:3000/auth/facebook-redirect";
+  }
   return (
     <div className="mt-[5%] flex justify-center items-center gap-3">
       <div className="flex flex-col gap-3 border border-black p-6 rounded-lg xl:w-1/3 ">
@@ -33,7 +36,12 @@ export default function Login() {
             </div>
           </div>
           {/* login button with google */}
-          <div className=" border rounded-lg p-2 cursor-pointer">
+          <div
+            className=" border rounded-lg p-2 cursor-pointer"
+            onClick={() => {
+              loginWithFacebook();
+            }}
+          >
             <div className="flex items-center justify-center gap-5">
               <FaFacebook className="text-[#4267B2] size-7" />
               <p>Facebook</p>
