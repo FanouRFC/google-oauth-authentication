@@ -24,9 +24,8 @@ export class UserService {
         return this.prisma.user.create({data: userData})
     }
 
-    async checkEmailExist(email:string): Promise<boolean>{
-        var data = await this.prisma.user.findUnique({where: {email}})
-        console.log(data)
+    async checkEmailExist(email:string, provider: string): Promise<boolean>{
+        var data = await this.prisma.user.findFirst({where: {email, provider}})
         if(!data){
             return false 
         }
