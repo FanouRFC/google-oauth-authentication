@@ -13,7 +13,7 @@ export class UserService {
         return this.prisma.user.findMany({where: 
             {OR: [
                 { name: { contains: search, mode: 'insensitive' } },
-                { email: { contains: search, mode: 'insensitive' } }
+                { email: { contains: search, mode: 'insensitive' } },
             ]
             }
         }
@@ -22,6 +22,15 @@ export class UserService {
 
     async add(userData: Prisma.UserCreateInput): Promise<User>{
         return this.prisma.user.create({data: userData})
+    }
+
+    async checkEmailExist(email:string): Promise<boolean>{
+        var data = await this.prisma.user.findUnique({where: {email}})
+        console.log(data)
+        if(!data){
+            return false 
+        }
+        return true
     }
 
     async delete(id: number):Promise<User>{
