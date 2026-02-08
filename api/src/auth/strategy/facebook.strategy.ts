@@ -10,8 +10,8 @@ export class FacebookStrategy extends PassportStrategy(Strategy, "facebook"){
             clientID: process.env.FACEBOOK_APP_ID!,
             clientSecret: process.env.FACEBOOK_APP_SECRET!,
             callbackURL: "http://localhost:3000/auth/facebook-redirect",
-            scope: ['email'],
-            profileFields: ["id", "email","name", "displayName", "photos"],
+            scope: ['email', 'user_birthday', 'user_gender'],
+            profileFields: ["id", "email","name", "displayName", "photos", "gender", "birthday"],
         })
     }
     validate(accessToken:string, refreshToken:string, profile:any): any {
