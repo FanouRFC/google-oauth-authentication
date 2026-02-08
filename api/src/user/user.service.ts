@@ -20,16 +20,20 @@ export class UserService {
         )
     }
 
+    async getId(id:number): Promise<User | null>{
+        return this.prisma.user.findUnique({where: {id}})
+    }
+
     async add(userData: Prisma.UserCreateInput): Promise<User>{
         return this.prisma.user.create({data: userData})
     }
 
-    async checkEmailExist(email:string, provider: string): Promise<boolean>{
+    async checkEmailExist(email:string, provider: string): Promise<number>{
         var data = await this.prisma.user.findFirst({where: {email, provider}})
         if(!data){
-            return false 
+            return 0 
         }
-        return true
+        return data.id
     }
 
     async delete(id: number):Promise<User>{

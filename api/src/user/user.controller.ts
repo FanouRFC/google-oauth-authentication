@@ -12,6 +12,11 @@ export class UserController {
         return await this.userService.getAll()
     }
 
+    @Get("/v1/:id")
+    async getId(@Param("id", ParseIntPipe) id){
+        return await this.userService.getId(id) 
+    }
+
     @Get(":id")
     async getSome(@Param("id") id){
         return await this.userService.getSome(id) 
