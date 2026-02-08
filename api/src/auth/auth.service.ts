@@ -9,12 +9,13 @@ export class AuthService {
       return 'No user from google';
     }
 
-    const {firstName, lastName, picture, email} = req.user
-
+    const {firstName, lastName, picture, email, gender, birthday} = req.user
     var data = {
       email,
       name: firstName + " " + lastName,
       picture,
+      gender,
+      birthday,
       provider: "google"
     }
   
@@ -43,10 +44,13 @@ export class AuthService {
   const {displayName} = profile
   const picture = profile.photos[0].value
   const email = profile.emails[0].value
+
     var data = {
       email,
       name: displayName,
       picture,
+      gender: profile.gender,
+      birthday: profile?._json?.birthday,
       provider: "facebook"
     }
 
