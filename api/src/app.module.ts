@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, UserModule],
+  imports: [ConfigModule.forRoot({isGlobal: true}), AuthModule, UserModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
