@@ -14,6 +14,14 @@ export class userAddDTO {
     picture: string
 
     @IsString()
+    @IsOptional()
+    gender: string
+
+    @IsString()
+    @IsOptional()
+    birthday: string
+
+    @IsString()
     @IsNotEmpty()
     provider: string
 }
