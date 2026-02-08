@@ -22,12 +22,13 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CiCirclePlus } from "react-icons/ci";
 
 type User = {
   id: number;
   email: string;
   name: string;
+  gender?: "male" | "female";
+  birthday?: string;
 };
 
 export default function UserList() {
@@ -63,7 +64,6 @@ export default function UserList() {
     <div className="flex justify-center">
       <div className="flex flex-col justify-center w-[75%]">
         <p className="text-2xl font-medium">List of all users</p>
-        <AddModal setUsers={setUsers} users={users} />
         <Input
           type="text"
           value={search}
@@ -74,10 +74,12 @@ export default function UserList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/3">Id</TableHead>
-              <TableHead className="w-1/3">Name</TableHead>
-              <TableHead className="w-1/3">Email</TableHead>
-              <TableHead className="w-1/3">Actions</TableHead>
+              <TableHead>Id</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Gender</TableHead>
+              <TableHead>Birthday</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -85,8 +87,10 @@ export default function UserList() {
               <TableRow>
                 <TableCell className="font-medium">{el.id}</TableCell>
                 <TableCell>{el.name}</TableCell>
+                <TableCell>{el.gender}</TableCell>
+                <TableCell>{el.birthday}</TableCell>
                 <TableCell>{el.email}</TableCell>
-                <TableCell className="flex gap-2 justify-center items-center">
+                <TableCell className="flex gap-2 items-center">
                   <EditModal
                     user={el}
                     users={users}
@@ -168,6 +172,11 @@ function EditModal({ user, setUsers, setIsOpen, users }: ModalProps) {
   const [name, setName] = useState<string>(user.name);
   const [email, setEmail] = useState<string>(user.email);
 
+  useEffect(() => {
+    setName((prev) => (prev = user.name));
+    setEmail((prev) => (prev = user.email));
+  }, [users]);
+
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     setName(e.target.value);
   }
@@ -186,7 +195,13 @@ function EditModal({ user, setUsers, setIsOpen, users }: ModalProps) {
       await userApi.update(userId, userData);
       var newUsers: User[] = users.map((el) =>
         el.id == userId
-          ? { id: userId, name: userData.name, email: userData.email }
+          ? {
+              id: userId,
+              name: userData.name,
+              email: userData.email,
+              birthday: user.birthday,
+              gender: user.gender,
+            }
           : el,
       );
       setUsers(newUsers);
@@ -258,98 +273,3 @@ type AddModalProps = {
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   users: User[];
 };
-
-function AddModal({ users, setUsers }: AddModalProps) {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-
-  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setName(e.target.value);
-  }
-  function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
-  }
-
-  async function addUser() {
-    var userData = {
-      name,
-      email,
-    };
-    console.log(userData);
-    try {
-      const request = await userApi.add(userData);
-
-      setUsers([
-        ...users,
-        {
-          id: parseInt(request.data.id),
-          email: userData.email,
-          name: userData.name,
-        },
-      ]);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div className="border rounded-lg p-2 flex gap-3 w-fit cursor-pointer">
-          <CiCirclePlus className="size-5 cursor-pointer" />
-          <p>New User</p>
-        </div>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Modification user</DialogTitle>
-          <DialogDescription>
-            Apportez vos modifications et cliquez sur Enregistrer.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={async (e: FormEvent) => {
-            e.preventDefault();
-            await addUser();
-          }}
-        >
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-2">
-              <p>Name</p>
-              <Input
-                className=""
-                value={name}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  handleNameChange(e);
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <p>Email</p>
-              <Input
-                className=""
-                value={email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  handleEmailChange(e);
-                }}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="cursor-pointer">
-                Annuler
-              </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              className="cursor-pointer bg-blue-500 hover:bg-blue-700"
-            >
-              Confirmer
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
