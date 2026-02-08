@@ -1,11 +1,13 @@
+import type { Response as resp } from 'express';
 import { AuthService } from './auth.service';
 import { FacebookGuard } from './guard/facebook-oauth.guard';
 import { GoogleOAuthGuard } from './guard/google-oauth.guard';
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards, Response } from '@nestjs/common';
+import { JWTGuard } from './guard/auth-guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly appService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
     
       @Get()
       @UseGuards(GoogleOAuthGuard)
@@ -13,8 +15,10 @@ export class AuthController {
     
       @Get('google-redirect')
       @UseGuards(GoogleOAuthGuard)
-      googleAuthRedirect(@Request() req) {
-        return this.appService.googleLogin(req);
+      async googleAuthRedirect(@Request() req, @Response() res : resp) {
+        const resLog = await this.authService.googleLogin(req);
+        const token = await this.authService.genererJWTToken(resLog)
+        return res.redirect(`http://localhost:5173/auth?token=${token}`)
       }
 
       @Get("facebook")
@@ -23,7 +27,15 @@ export class AuthController {
 
       @Get('facebook-redirect')
       @UseGuards(FacebookGuard)
-      facebookAuthRedirect(@Request() req){
-        return this.appService.facebookLogin(req)
+      async facebookAuthRedirect(@Request() req, @Response() res : resp){
+        const resLog = await this.authService.facebookLogin(req)
+        const token = await this.authService.genererJWTToken(resLog!)
+        return res.redirect(`http://localhost:5173/auth?token=${token}`)
+      }
+
+      @Get('me')
+      @UseGuards(JWTGuard)
+      getInfo(@Request() req){
+        return req.user
       }
 }

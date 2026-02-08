@@ -25,7 +25,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const account_id = profile.id
    
   const additionalInfo = await this.fetchAdditionalUserInfo(accessToken, account_id)
-  console.log(additionalInfo);
     const user = {
       email: emails[0].value,
       firstName: name.givenName,
