@@ -2,7 +2,12 @@ import { axiosInstance } from "./axiosConfig"
 
 type userType = {
     email?: string,
-    name?: string
+    name?: string,
+    picture?: string ;
+    birthday?: string ;
+    gender?: string ;
+    provider?: string ;
+    password?: string ;
 }
 
 export const userApi = {
@@ -10,6 +15,7 @@ export const userApi = {
     getBySearch: (search: string)=>{return axiosInstance.get(`/user/${search}`)},
     getById: (id: number)=>{return axiosInstance.get(`/user/v1/${id}`)},
     add: (data: userType)=>{return axiosInstance.post("/user", data)},
+    add1: (data: userType)=>{return axiosInstance.post("/user/v1", data)},
     delete: (id: number)=>{return axiosInstance.delete(`/user/${id}`)},
     update: (id: number, data: userType)=>{return axiosInstance.patch(`/user/${id}`, data)}
 }
