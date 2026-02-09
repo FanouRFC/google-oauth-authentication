@@ -7,6 +7,7 @@ import { FacebookStrategy } from './strategy/facebook.strategy';
 import { UserModule } from 'src/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JWTStrategy } from './strategy/auth-strategy';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { JWTStrategy } from './strategy/auth-strategy';
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, FacebookStrategy, JWTStrategy]
+  providers: [AuthService, GoogleStrategy, FacebookStrategy, JWTStrategy, PrismaService]
 })
 export class AuthModule {}

@@ -2,8 +2,9 @@ import type { Response as resp } from 'express';
 import { AuthService } from './auth.service';
 import { FacebookGuard } from './guard/facebook-oauth.guard';
 import { GoogleOAuthGuard } from './guard/google-oauth.guard';
-import { Controller, Get, Request, UseGuards, Response } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards, Response, Body, ValidationPipe, Post } from '@nestjs/common';
 import { JWTGuard } from './guard/auth-guard';
+import { UserLoginDTO } from './dto/user-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +38,10 @@ export class AuthController {
       @UseGuards(JWTGuard)
       getInfo(@Request() req){
         return req.user
+      }
+
+      @Post('login')
+      async login(@Body(ValidationPipe) body : UserLoginDTO){
+        return await this.authService.simpleLogin(body)
       }
 }
