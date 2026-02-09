@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import {JwtService} from "@nestjs/jwt"
 
 @Injectable()
 export class UserService {
-    constructor(private prisma: PrismaService){}
+    constructor(private prisma: PrismaService, private jwtService: JwtService){}
     async getAll(): Promise<User[]>{
         return (await this.prisma.user.findMany({orderBy: {id: 'asc'}}))
     }
@@ -25,7 +26,13 @@ export class UserService {
     }
 
     async add(userData: Prisma.UserCreateInput): Promise<User>{
-        return this.prisma.user.create({data: userData})
+        return await this.prisma.user.create({data: userData})
+    }
+
+    async addNoOuth(userData: Prisma.UserCreateInput): Promise<{user: User, token: string}>{
+        const user = await this.prisma.user.create({data: userData})
+        const token = await this.genererJWTToken(user.id)
+        return {user, token}
     }
 
     async checkEmailExist(email:string, provider: string): Promise<number>{
@@ -43,4 +50,8 @@ export class UserService {
     async update(id: number ,userData: Prisma.UserUpdateInput): Promise<User>{
         return this.prisma.user.update({where: {id: id}, data:userData})
     }
+
+    async genererJWTToken(id: number){
+    return this.jwtService.signAsync({id})
+  }
 }

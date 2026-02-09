@@ -22,6 +22,10 @@ export class userAddDTO {
     birthday: string
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     provider: string
+
+    @IsString()
+    @IsOptional()
+    password: string
 }

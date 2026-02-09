@@ -27,6 +27,11 @@ export class UserController {
         return await this.userService.add(body)
     }
 
+    @Post("/v1")
+    async addOneUser1(@Body(ValidationPipe) body : userAddDTO){
+        return await this.userService.addNoOuth(body)
+    }
+
     @Delete(":id")
     async deleteUser(@Param("id", ParseIntPipe) id){
         return await this.userService.delete(id)
