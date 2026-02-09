@@ -7,10 +7,13 @@ export default function AuthCallBack() {
   const location = useLocation();
 
   useEffect(() => {
+    var tokenR = localStorage.getItem("token");
     const tokenL = location?.state?.token;
     const token: string | null = searchParams.get("token");
     if (token || tokenL) {
       localStorage.setItem("token", token ?? tokenL);
+      navigate("/dashboard");
+    } else if (tokenR) {
       navigate("/dashboard");
     } else {
       navigate("/login");
