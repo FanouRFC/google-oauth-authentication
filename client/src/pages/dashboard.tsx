@@ -2,7 +2,7 @@ import { axiosInstance } from "@/api/axiosConfig";
 import { userApi } from "@/api/userApi";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 type User = {
   id: number;
@@ -15,7 +15,6 @@ type User = {
 export default function Dashboard() {
   const [id, setId] = useState<number>();
   const [userData, setUserData] = useState<User | undefined>();
-
   const navigate = useNavigate();
 
   useEffect(() => {
