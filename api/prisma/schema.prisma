@@ -21,5 +21,6 @@ model User {
   picture String?
   birthday String?
   gender String?
-  provider String
+  provider String?
+  password String?
 }
