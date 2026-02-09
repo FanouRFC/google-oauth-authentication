@@ -3,8 +3,36 @@ import CInput from "../components/custom/input";
 import { Button } from "../components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { axiosInstance } from "@/api/axiosConfig";
 
 export default function Login() {
+  const [userData, setUserData] = useState<{ email: string; password: string }>(
+    { email: "", password: "" },
+  );
+
+  const [error, setError] = useState<string>();
+
+  const navigate = useNavigate();
+
+  function onHandleChange(e: ChangeEvent<HTMLInputElement>) {
+    setUserData({ ...userData, [e.target.id]: e.target.value });
+  }
+
+  async function login() {
+    try {
+      const req = await axiosInstance.post("auth/login", userData);
+      if (req.data) {
+        navigate("/auth", { state: { token: req.data } });
+      } else {
+        setError("Informations incorrects");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function loginWithGoogle() {
     window.location.href = "http://localhost:3000/auth/google-redirect";
   }
@@ -12,13 +40,14 @@ export default function Login() {
   function loginWithFacebook() {
     window.location.href = "http://localhost:3000/auth/facebook-redirect";
   }
+
   return (
     <div className="mt-[5%] flex justify-center items-center gap-3">
       <div className="flex flex-col gap-3 border border-black p-6 rounded-lg xl:w-1/3 ">
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-3xl">Log in to your Account</p>
+          <p className="font-bold text-3xl">Connexion à votre compte</p>
           <p className="text-black/50 font-medium">
-            Welcome back! Select method to log in:
+            Sélectionnez une méthode pour vous connecter :
           </p>
         </div>
 
@@ -53,24 +82,61 @@ export default function Login() {
           <div className="absolute top-1/2 -translate-y-1/2 h-0.5 w-full bg-gray-300 z-0"></div>
           <div className="relative flex justify-center z-10">
             <p className=" text-center text-gray-700 bg-white w-fit px-3 py-1">
-              or continue with email
+              ou continuez avec votre adresse e-mail
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <CInput placeholder="Email" type="text" Icone={Mail} />
-          <CInput placeholder="Password" type="password" Icone={Mail} />
-          <p className="text-end me-5">Forgot password ?</p>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={async (e: FormEvent) => {
+            e.preventDefault();
+            await login();
+          }}
+        >
+          {error && (
+            <div className="bg-red-200 border rounded-md p-2 text-center">
+              <p>{error}</p>
+            </div>
+          )}
+          <CInput
+            placeholder="Email"
+            type="text"
+            Icone={Mail}
+            id="email"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              onHandleChange(e);
+            }}
+          />
+          <CInput
+            placeholder="Password"
+            type="password"
+            Icone={Mail}
+            id="password"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              onHandleChange(e);
+            }}
+          />
 
-          <Button className="mt-3 py-5 cursor-pointer bg-[#065AD8]">
-            Log in
+          <Button
+            type="submit"
+            className="mt-3 py-5 cursor-pointer bg-[#065AD8]"
+          >
+            Se connecter
           </Button>
 
           <p>
-            Doesn't have an account ? <span>Create an account</span>
+            Vous n’avez pas de compte ?{" "}
+            <span
+              className="font-medium text-blue-500 cursor-pointer"
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Créer un compte ?
+            </span>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );
