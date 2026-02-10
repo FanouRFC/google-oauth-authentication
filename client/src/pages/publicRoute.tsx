@@ -1,4 +1,4 @@
-import { Navigate, useLocation, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
 export default function PublicRoute() {
   const token = localStorage.getItem("token");
