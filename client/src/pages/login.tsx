@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import CInput from "../components/custom/input";
 import { Button } from "../components/ui/button";
 import { FcGoogle } from "react-icons/fc";
@@ -21,9 +21,6 @@ export default function Login() {
   }
 
   async function login() {
-    if (userData.email == "admin@gmail.com" && userData.password == "1234") {
-      return navigate("/admin");
-    }
     try {
       const req = await axiosInstance.post("auth/login", userData);
       if (req.data) {
@@ -49,6 +46,7 @@ export default function Login() {
       <div className="flex flex-col gap-3 border border-black p-6 rounded-lg xl:w-1/3 ">
         <div className="flex flex-col gap-2">
           <p className="font-bold text-3xl">Connexion à votre compte</p>
+
           <p className="text-black/50 font-medium">
             Sélectionnez une méthode pour vous connecter :
           </p>
@@ -57,19 +55,19 @@ export default function Login() {
         <div className="grid grid-cols-2 gap-3 ">
           {/* login button with google */}
           <div
-            className=" border rounded-lg p-2 cursor-pointer"
+            className=" border rounded-lg p-2 cursor-pointer hover:bg-gray-100"
             onClick={() => {
               loginWithGoogle();
             }}
           >
-            <div className="flex items-center justify-center gap-5">
+            <div className="flex items-center justify-center gap-5 ">
               <FcGoogle className="size-7" />
               <p>Google</p>
             </div>
           </div>
           {/* login button with google */}
           <div
-            className=" border rounded-lg p-2 cursor-pointer"
+            className=" border rounded-lg p-2 cursor-pointer hover:bg-gray-100"
             onClick={() => {
               loginWithFacebook();
             }}
@@ -112,9 +110,9 @@ export default function Login() {
             }}
           />
           <CInput
-            placeholder="Password"
+            placeholder="Mot de passe"
             type="password"
-            Icone={Mail}
+            Icone={Lock}
             id="password"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               onHandleChange(e);
@@ -123,9 +121,18 @@ export default function Login() {
 
           <Button
             type="submit"
-            className="mt-3 py-5 cursor-pointer bg-[#065AD8]"
+            className="mt-3 py-5 cursor-pointer bg-[#065AD8] hover:bg-[#0e3877]"
           >
             Se connecter
+          </Button>
+          <Button
+            type="button"
+            className="mt-3 py-5 cursor-pointer border border-[#065AD8] bg-white text-black hover:bg-[#065AD8] hover:text-white"
+            onClick={() => {
+              navigate("/admin");
+            }}
+          >
+            Se connecter en tant qu'admin (démo)
           </Button>
 
           <p>
