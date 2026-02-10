@@ -3,7 +3,7 @@ import CInput from "@/components/custom/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroupItem, RadioGroup } from "@/components/ui/radio-group";
-import { Mail } from "lucide-react";
+import { Calendar, Lock, Mail, User } from "lucide-react";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 
@@ -70,7 +70,7 @@ export default function Register() {
           <CInput
             placeholder="Nom"
             type="text"
-            Icone={Mail}
+            Icone={User}
             id="name"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               onHandleChange(e);
@@ -110,7 +110,7 @@ export default function Register() {
           <CInput
             placeholder="Date de naissance"
             type="date"
-            Icone={Mail}
+            Icone={Calendar}
             id="birthday"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               onHandleChange(e);
@@ -118,15 +118,15 @@ export default function Register() {
           />
           <CInput
             placeholder="Password"
-            type="password"
-            Icone={Mail}
+            type="Mot de passe"
+            Icone={Lock}
             id="password"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               onHandleChange(e);
             }}
           />
           <Button
-            className="mt-3 py-5 cursor-pointer bg-[#065AD8]"
+            className="mt-3 py-5 cursor-pointer bg-[#065AD8] hover:bg-[#0e3877]"
             type="submit"
           >
             Valider
