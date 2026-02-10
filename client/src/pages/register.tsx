@@ -117,8 +117,8 @@ export default function Register() {
             }}
           />
           <CInput
-            placeholder="Password"
-            type="Mot de passe"
+            placeholder="Mot de passe"
+            type="password"
             Icone={Lock}
             id="password"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
