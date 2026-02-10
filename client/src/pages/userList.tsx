@@ -19,9 +19,10 @@ import {
 } from "@/components/ui/dialog";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { FaRegEdit } from "react-icons/fa";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 type User = {
   id: number;
@@ -61,23 +62,28 @@ export default function UserList() {
   }, []);
 
   return (
-    <div className="flex justify-center">
-      <div className="flex flex-col justify-center w-[75%]">
-        <p className="text-2xl font-medium">List of all users</p>
-        <Input
-          type="text"
-          value={search}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            onSearchChange(e);
-          }}
-        />
+    <div className="flex justify-center mt-[2%]">
+      <div className="flex flex-col justify-center w-[75%] gap-5">
+        <p className="text-2xl font-medium">Liste des utilisateurs</p>
+        <div className="relative">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+          <Input
+            className="ps-10 w-60"
+            type="text"
+            placeholder="Rakoto"
+            value={search}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              onSearchChange(e);
+            }}
+          />
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Id</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Gender</TableHead>
-              <TableHead>Birthday</TableHead>
+              <TableHead>Nom d'utilisateur</TableHead>
+              <TableHead>Sexe</TableHead>
+              <TableHead>Date naissance</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -87,11 +93,13 @@ export default function UserList() {
               <TableRow>
                 <TableCell className="font-medium">{el.id}</TableCell>
                 <TableCell>{el.name}</TableCell>
-                <TableCell>{el.gender}</TableCell>
+                <TableCell>
+                  {el.gender == "male" ? "masculin" : "feminin"}
+                </TableCell>
                 <TableCell>{el.birthday}</TableCell>
                 <TableCell>{el.email}</TableCell>
                 <TableCell className="flex gap-2 items-center">
-                  <EditModal
+                  <ViewModal
                     user={el}
                     users={users}
                     setUsers={setUsers}
@@ -126,6 +134,7 @@ function DeleteModal({ user, setUsers, users, setIsOpen }: ModalProps) {
       await userApi.delete(user.id);
       var newUsers: User[] = users.filter((el) => el.id !== user.id && el);
       setUsers(newUsers);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +157,7 @@ function DeleteModal({ user, setUsers, users, setIsOpen }: ModalProps) {
               Etes vous sûr de vouloir supprimer cet utilisateur {user.id}?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="mt-5">
             <DialogClose asChild>
               <Button variant="outline" className="cursor-pointer">
                 Annuler
@@ -167,101 +176,74 @@ function DeleteModal({ user, setUsers, users, setIsOpen }: ModalProps) {
   );
 }
 
-function EditModal({ user, setUsers, setIsOpen, users }: ModalProps) {
-  const [id, setId] = useState<number>(user.id);
-  const [name, setName] = useState<string>(user.name);
-  const [email, setEmail] = useState<string>(user.email);
-
-  useEffect(() => {
-    setName((prev) => (prev = user.name));
-    setEmail((prev) => (prev = user.email));
-  }, [users]);
-
-  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setName(e.target.value);
-  }
-  function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
-  }
-
-  async function updateUser() {
-    const userId = id;
-    var userData = {
-      name,
-      email,
-    };
-    console.log(userData);
-    try {
-      await userApi.update(userId, userData);
-      var newUsers: User[] = users.map((el) =>
-        el.id == userId
-          ? {
-              id: userId,
-              name: userData.name,
-              email: userData.email,
-              birthday: user.birthday,
-              gender: user.gender,
-            }
-          : el,
-      );
-      setUsers(newUsers);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+function ViewModal({ user, setUsers, setIsOpen, users }: ModalProps) {
+  // async function updateUser() {
+  //   const userId = id;
+  //   var userData = {
+  //     name,
+  //     email,
+  //   };
+  //   console.log(userData);
+  //   try {
+  //     await userApi.update(userId, userData);
+  //     var newUsers: User[] = users.map((el) =>
+  //       el.id == userId
+  //         ? {
+  //             id: userId,
+  //             name: userData.name,
+  //             email: userData.email,
+  //             birthday: user.birthday,
+  //             gender: user.gender,
+  //           }
+  //         : el,
+  //     );
+  //     setUsers(newUsers);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <FaRegEdit className="size-5 cursor-pointer" />
+        <MdOutlineRemoveRedEye className="size-5 cursor-pointer" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-sm">
-        <form
-          onSubmit={async (e: FormEvent) => {
-            e.preventDefault();
-            await updateUser();
-          }}
-        >
+      <DialogContent className="sm:max-w-sm ">
+        <form>
           <DialogHeader>
-            <DialogTitle>Modification user</DialogTitle>
+            <DialogTitle>Informations de l'utilisateur</DialogTitle>
             <DialogDescription>
-              Apportez vos modifications et cliquez sur Enregistrer.
+              Visualisez les données utilisateurs
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2 mt-5">
             <div className="flex flex-col gap-2">
               <p>Name</p>
+              <Input className="" value={user.name} readOnly />
+            </div>
+            <div className="flex flex-col gap-2">
+              <p>Sexe</p>
               <Input
                 className=""
-                value={name}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  handleNameChange(e);
-                }}
+                value={user.gender == "male" ? "masculin" : "feminin"}
+                readOnly
               />
+            </div>
+            <div className="flex flex-col gap-2">
+              <p>Date naissance</p>
+              <Input className="" value={user.birthday} readOnly />
             </div>
             <div className="flex flex-col gap-2">
               <p>Email</p>
-              <Input
-                className=""
-                value={email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  handleEmailChange(e);
-                }}
-              />
+              <Input className="" value={user.email} readOnly />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-5">
             <DialogClose asChild>
               <Button variant="outline" className="cursor-pointer">
-                Annuler
+                Retour
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              className="cursor-pointer bg-blue-500 hover:bg-blue-700"
-            >
-              Confirmer
-            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
