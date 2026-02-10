@@ -2,7 +2,7 @@ import { axiosInstance } from "@/api/axiosConfig";
 import { userApi } from "@/api/userApi";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 type User = {
   id: number;
